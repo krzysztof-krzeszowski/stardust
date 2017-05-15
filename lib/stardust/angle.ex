@@ -56,6 +56,19 @@ defmodule Stardust.Angle do
   def rad_to_deg(angle), do: angle * 180.0 / :math.pi
 
   @doc """
+  Returns angle as specified format.
+
+  ## Examples
+      iex> Stardust.Angle.new(90) |> Stardust.Angle.to("d")
+      90.0
+      iex> Stardust.Angle.new(90) |> Stardust.Angle.to("r")
+      1.5707963267948966
+  """
+  @spec to(%Angle{}, binary) :: binary | float
+  def to(angle, "d"), do: angle |> Angle.to_deg()
+  def to(angle, "r"), do: angle |> Angle.to_rad()
+
+  @doc """
   Returns as degrees.
 
   ## Example
