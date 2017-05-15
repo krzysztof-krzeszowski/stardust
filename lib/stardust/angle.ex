@@ -16,13 +16,24 @@ defmodule Stardust.Angle do
       iex> Stardust.Angle.new(90)
       %Stardust.Angle{angle: 1.5707963267948966, format: :d}
   """
-  @spec new(integer) :: %Angle{}
-  @spec new(float) :: %Angle{}
+  @spec new(number) :: %Angle{}
   @spec new(binary) :: %Angle{}
-  def new(angle) when is_integer(angle) == true, do: new(1.0 * angle)
-  def new(angle) when is_float(angle) do
-    Logger.warn "Assuming angle in degrees"
+  def new(angle) do
+    Logger.info "Assuming angle in degrees"
     %Angle{angle: (angle |> deg_to_rad), format: :d}
+  end
+
+  @doc """
+  Angle addition.
+
+  ## Example
+      iex> Stardust.Angle.new(90) |> Stardust.Angle.add(Stardust.Angle.new(90))
+      %Stardust.Angle{angle: 3.141592653589793, format: :d}
+  """
+
+  @spec add(%Angle{}, %Angle{}) :: %Angle{}
+  def add(angle1, angle2) do
+    %Angle{angle: angle1.angle + angle2.angle, format: angle1.format} 
   end
 
   @doc """
@@ -36,8 +47,7 @@ defmodule Stardust.Angle do
       iex> Stardust.Angle.deg_to_rad(35.23)
       0.6148794954776022
   """
-  @spec deg_to_rad(integer) :: float
-  @spec deg_to_rad(float) :: float
+  @spec deg_to_rad(number) :: float
   def deg_to_rad(angle), do: angle * :math.pi / 180.0
 
   @doc """
@@ -51,8 +61,7 @@ defmodule Stardust.Angle do
       iex> Stardust.Angle.rad_to_deg(1)
       57.29577951308232
   """
-  @spec rad_to_deg(integer) :: float
-  @spec rad_to_deg(float) :: float
+  @spec rad_to_deg(number) :: float
   def rad_to_deg(angle), do: angle * 180.0 / :math.pi
 
   @doc """
@@ -78,6 +87,13 @@ defmodule Stardust.Angle do
   @spec to_deg(%Angle{}) :: float
   def to_deg(angle), do: (angle.angle |> rad_to_deg)
 
+  @doc """
+  Returns as radians.
+
+  ## Example
+      iex> Stardust.Angle.new(90) |> Stardust.Angle.to_rad()
+      1.5707963267948966
+  """
   @spec to_rad(%Angle{}) :: float
   def to_rad(angle), do: angle.angle
 end
