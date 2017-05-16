@@ -40,16 +40,20 @@ defmodule Stardust.Angle do
   end
 
   @doc """
-  Construct new angle from d:m:s format.
+  Construct new angle from formats:
+    12:00:00.0
+    12d00m00.0s
 
   ## Example
       iex> Stardust.Angle.from_dms("6:30:00") |> Stardust.Angle.to_deg() |> Float.round(2)
       6.5
+      iex> Stardust.Angle.from_dms("6d30m00s") |> Stardust.Angle.to_deg() |> Float.round(2)
+      6.5
   """
-  @spec from_dms(binary) :: %Angle{}
+  @spec from_dms(binary) :: %Angle{} | :error
   def from_dms(angle) do
     [h, m, s] = angle
-    |> String.split(":")
+    |> String.split(:binary.compile_pattern([":", "d", "m"]))
     |> Enum.map(&Float.parse/1)
     |> Enum.map(&(elem(&1, 0)))
     %Angle{angle: (((h * 3600.0 + m * 60 + s) / 3600) |> deg_to_rad), format: :dms}
