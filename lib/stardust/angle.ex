@@ -8,18 +8,24 @@ defmodule Stardust.Angle do
   """
 
   @doc """
-  Construct new angle
+  New angle from degrees
 
-  ## Examples
-      iex> Stardust.Angle.new(90)
+  ## Example
+      iex> Stardust.Angle.from_degrees(90)
       1.5707963267948966
   """
-  @spec new(number) :: float
-  @spec new(binary) :: float
-  def new(angle) when is_number(angle) == true do
-    Logger.info "Assuming angle in degrees"
-    angle |> deg_to_rad
-  end
+  @spec from_degrees(number) :: float
+  def from_degrees(angle), do: angle |> deg_to_rad
+
+  @doc """
+  New angle from radians. Written for consistency.
+
+  ## Example
+      iex> Stardust.Angle.from_radians(2.13)
+      2.13
+  """
+  @spec from_radians(number) :: float
+  def from_radians(angle), do: angle
 
   @doc """
   Construc new angle from h:m:s format.
@@ -61,7 +67,7 @@ defmodule Stardust.Angle do
   Angle addition.
 
   ## Example
-      iex> Stardust.Angle.new(90) |> Stardust.Angle.add(Stardust.Angle.new(90))
+      iex> Stardust.Angle.from_degrees(90) |> Stardust.Angle.add(Stardust.Angle.from_degrees(90))
       3.141592653589793
   """
 
@@ -102,9 +108,9 @@ defmodule Stardust.Angle do
   Returns angle as specified format.
 
   ## Examples
-      iex> Stardust.Angle.new(90) |> Stardust.Angle.to("d")
+      iex> Stardust.Angle.from_degrees(90) |> Stardust.Angle.to("d")
       90.0
-      iex> Stardust.Angle.new(90) |> Stardust.Angle.to("r")
+      iex> Stardust.Angle.from_degrees(90) |> Stardust.Angle.to("r")
       1.5707963267948966
   """
   @spec to(float, binary) :: binary | float
@@ -115,7 +121,7 @@ defmodule Stardust.Angle do
   Returns as degrees.
 
   ## Example
-      iex> Stardust.Angle.new(90) |> Stardust.Angle.to_deg()
+      iex> Stardust.Angle.from_degrees(90) |> Stardust.Angle.to_deg()
       90.0
   """
   @spec to_deg(float) :: float
@@ -125,7 +131,7 @@ defmodule Stardust.Angle do
   Returns as radians.
 
   ## Example
-      iex> Stardust.Angle.new(90) |> Stardust.Angle.to_rad()
+      iex> Stardust.Angle.from_degrees(90) |> Stardust.Angle.to_rad()
       1.5707963267948966
   """
   @spec to_rad(float) :: float
