@@ -31,6 +31,8 @@ defmodule Stardust.Mixfile do
     [
       { :ex_doc, "~> 0.14" },
       { :earmark, "~> 1.2.2" },
+      { :excheck, "~> 0.5", only: :test },
+      { :triq, github: "triqng/triq", only: :test },
     ]
   end
 end
