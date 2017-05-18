@@ -18,9 +18,45 @@ defmodule Stardust.Angle do
   """
   @spec new(number) :: %Angle{}
   @spec new(binary) :: %Angle{}
-  def new(angle) do
+  def new(angle) when is_number(angle) == true do
     Logger.info "Assuming angle in degrees"
     %Angle{angle: (angle |> deg_to_rad), format: :d}
+  end
+
+  @doc """
+  Construc new angle from h:m:s format.
+
+  ## Example
+      iex> Stardust.Angle.from_hms("1:00:00") |> Stardust.Angle.to_deg() |> Float.round
+      15.0
+  """
+  @spec from_hms(binary) :: %Angle{}
+  def from_hms(angle) do
+    [h, m, s] = angle
+    |> String.split(":")
+    |> Enum.map(&Float.parse/1)
+    |> Enum.map(&(elem(&1, 0)))
+    %Angle{angle: ((((360 * h / 24) * 3600.0 + m * 60 + s) / 3600) |> deg_to_rad), format: :hms}
+  end
+
+  @doc """
+  Construct new angle from formats:
+    12:00:00.0
+    12d00m00.0s
+
+  ## Example
+      iex> Stardust.Angle.from_dms("6:30:00") |> Stardust.Angle.to_deg() |> Float.round(2)
+      6.5
+      iex> Stardust.Angle.from_dms("6d30m00s") |> Stardust.Angle.to_deg() |> Float.round(2)
+      6.5
+  """
+  @spec from_dms(binary) :: %Angle{} | :error
+  def from_dms(angle) do
+    [h, m, s] = angle
+    |> String.split(:binary.compile_pattern([":", "d", "m"]))
+    |> Enum.map(&Float.parse/1)
+    |> Enum.map(&(elem(&1, 0)))
+    %Angle{angle: (((h * 3600.0 + m * 60 + s) / 3600) |> deg_to_rad), format: :dms}
   end
 
   @doc """
