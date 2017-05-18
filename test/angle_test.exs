@@ -7,9 +7,9 @@ defmodule AnglePropertyTest do
       for_all number in real() do
         case number do
           0.0 ->
-            (Stardust.Angle.new(number) |> Map.get(:angle)) == number
+            Stardust.Angle.new(number) == number
           _ ->
-            (Stardust.Angle.new(number) |> Map.get(:angle)) != number
+            Stardust.Angle.new(number) != number
         end
       end
     end

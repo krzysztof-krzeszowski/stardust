@@ -7,20 +7,18 @@ defmodule Stardust.Angle do
   Functions for angle parsing and calculations.
   """
 
-  defstruct angle: nil, format: :d
-
   @doc """
   Construct new angle
 
   ## Examples
       iex> Stardust.Angle.new(90)
-      %Stardust.Angle{angle: 1.5707963267948966, format: :d}
+      1.5707963267948966
   """
-  @spec new(number) :: %Angle{}
-  @spec new(binary) :: %Angle{}
+  @spec new(number) :: float
+  @spec new(binary) :: float
   def new(angle) when is_number(angle) == true do
     Logger.info "Assuming angle in degrees"
-    %Angle{angle: (angle |> deg_to_rad), format: :d}
+    angle |> deg_to_rad
   end
 
   @doc """
@@ -30,13 +28,13 @@ defmodule Stardust.Angle do
       iex> Stardust.Angle.from_hms("1:00:00") |> Stardust.Angle.to_deg() |> Float.round
       15.0
   """
-  @spec from_hms(binary) :: %Angle{}
+  @spec from_hms(binary) :: float
   def from_hms(angle) do
     [h, m, s] = angle
     |> String.split(":")
     |> Enum.map(&Float.parse/1)
     |> Enum.map(&(elem(&1, 0)))
-    %Angle{angle: ((((360 * h / 24) * 3600.0 + m * 60 + s) / 3600) |> deg_to_rad), format: :hms}
+    (((360 * h / 24) * 3600.0 + m * 60 + s) / 3600) |> deg_to_rad
   end
 
   @doc """
@@ -50,13 +48,13 @@ defmodule Stardust.Angle do
       iex> Stardust.Angle.from_dms("6d30m00s") |> Stardust.Angle.to_deg() |> Float.round(2)
       6.5
   """
-  @spec from_dms(binary) :: %Angle{} | :error
+  @spec from_dms(binary) :: float | :error
   def from_dms(angle) do
     [h, m, s] = angle
     |> String.split(:binary.compile_pattern([":", "d", "m"]))
     |> Enum.map(&Float.parse/1)
     |> Enum.map(&(elem(&1, 0)))
-    %Angle{angle: (((h * 3600.0 + m * 60 + s) / 3600) |> deg_to_rad), format: :dms}
+    ((h * 3600.0 + m * 60 + s) / 3600) |> deg_to_rad
   end
 
   @doc """
@@ -64,12 +62,12 @@ defmodule Stardust.Angle do
 
   ## Example
       iex> Stardust.Angle.new(90) |> Stardust.Angle.add(Stardust.Angle.new(90))
-      %Stardust.Angle{angle: 3.141592653589793, format: :d}
+      3.141592653589793
   """
 
-  @spec add(%Angle{}, %Angle{}) :: %Angle{}
+  @spec add(float, float) :: float
   def add(angle1, angle2) do
-    %Angle{angle: angle1.angle + angle2.angle, format: angle1.format} 
+    angle1 + angle2
   end
 
   @doc """
@@ -109,7 +107,7 @@ defmodule Stardust.Angle do
       iex> Stardust.Angle.new(90) |> Stardust.Angle.to("r")
       1.5707963267948966
   """
-  @spec to(%Angle{}, binary) :: binary | float
+  @spec to(float, binary) :: binary | float
   def to(angle, "d"), do: angle |> Angle.to_deg()
   def to(angle, "r"), do: angle |> Angle.to_rad()
 
@@ -120,8 +118,8 @@ defmodule Stardust.Angle do
       iex> Stardust.Angle.new(90) |> Stardust.Angle.to_deg()
       90.0
   """
-  @spec to_deg(%Angle{}) :: float
-  def to_deg(angle), do: (angle.angle |> rad_to_deg)
+  @spec to_deg(float) :: float
+  def to_deg(angle), do: angle |> rad_to_deg
 
   @doc """
   Returns as radians.
@@ -130,6 +128,6 @@ defmodule Stardust.Angle do
       iex> Stardust.Angle.new(90) |> Stardust.Angle.to_rad()
       1.5707963267948966
   """
-  @spec to_rad(%Angle{}) :: float
-  def to_rad(angle), do: angle.angle
+  @spec to_rad(float) :: float
+  def to_rad(angle), do: angle
 end
