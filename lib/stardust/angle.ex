@@ -28,16 +28,20 @@ defmodule Stardust.Angle do
   def from_radians(angle), do: angle
 
   @doc """
-  Construc new angle from h:m:s format.
+  Construc new angle from formats:
+    12:00:00.0
+    12h00m00.0s
 
   ## Example
-      iex> Stardust.Angle.from_hms("1:00:00") |> Stardust.Angle.to_deg() |> Float.round
+      iex> Stardust.Angle.from_hms("1:00:00.0") |> Stardust.Angle.to_deg() |> Float.round
+      15.0
+      iex> Stardust.Angle.from_hms("1h00m00.0s") |> Stardust.Angle.to_deg() |> Float.round
       15.0
   """
   @spec from_hms(binary) :: float
   def from_hms(angle) do
     [h, m, s] = angle
-    |> String.split(":")
+    |> String.split(:binary.compile_pattern([":", "h", "m"]))
     |> Enum.map(&Float.parse/1)
     |> Enum.map(&(elem(&1, 0)))
     (((360 * h / 24) * 3600.0 + m * 60 + s) / 3600) |> deg_to_rad
@@ -49,9 +53,9 @@ defmodule Stardust.Angle do
     12d00m00.0s
 
   ## Example
-      iex> Stardust.Angle.from_dms("6:30:00") |> Stardust.Angle.to_deg() |> Float.round(2)
+      iex> Stardust.Angle.from_dms("6:30:00.0") |> Stardust.Angle.to_deg() |> Float.round(2)
       6.5
-      iex> Stardust.Angle.from_dms("6d30m00s") |> Stardust.Angle.to_deg() |> Float.round(2)
+      iex> Stardust.Angle.from_dms("6d30m00.0s") |> Stardust.Angle.to_deg() |> Float.round(2)
       6.5
   """
   @spec from_dms(binary) :: float | :error
