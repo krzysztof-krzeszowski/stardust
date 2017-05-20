@@ -11,7 +11,7 @@ defmodule Stardust.Angle do
   New angle from degrees
 
   ## Example
-      iex> Stardust.Angle.from_deg(90)
+      iex> from_deg(90)
       1.5707963267948966
   """
   @spec from_deg(number) :: float
@@ -21,7 +21,7 @@ defmodule Stardust.Angle do
   New angle from radians. Written for consistency.
 
   ## Example
-      iex> Stardust.Angle.from_rad(2.13)
+      iex> from_rad(2.13)
       2.13
   """
   @spec from_rad(number) :: float
@@ -33,9 +33,9 @@ defmodule Stardust.Angle do
     12h00m00.0s
 
   ## Example
-      iex> Stardust.Angle.from_hms("1:00:00.0") |> Stardust.Angle.to_deg() |> Float.round
+      iex> from_hms("1:00:00.0") |> to_deg |> Float.round
       15.0
-      iex> Stardust.Angle.from_hms("1h00m00.0s") |> Stardust.Angle.to_deg() |> Float.round
+      iex> from_hms("1h00m00.0s") |> to_deg |> Float.round
       15.0
   """
   @spec from_hms(binary) :: float
@@ -53,9 +53,9 @@ defmodule Stardust.Angle do
     12d00m00.0s
 
   ## Example
-      iex> Stardust.Angle.from_dms("6:30:00.0") |> Stardust.Angle.to_deg() |> Float.round(2)
+      iex> from_dms("6:30:00.0") |> to_deg |> Float.round(2)
       6.5
-      iex> Stardust.Angle.from_dms("6d30m00.0s") |> Stardust.Angle.to_deg() |> Float.round(2)
+      iex> from_dms("6d30m00.0s") |> to_deg |> Float.round(2)
       6.5
   """
   @spec from_dms(binary) :: float | :error
@@ -71,7 +71,7 @@ defmodule Stardust.Angle do
   Angle addition.
 
   ## Example
-      iex> Stardust.Angle.from_deg(90) |> Stardust.Angle.add(Stardust.Angle.from_deg(90))
+      iex> from_deg(90) |> add(from_deg(90))
       3.141592653589793
   """
 
@@ -84,11 +84,11 @@ defmodule Stardust.Angle do
   Converts degrees to radians.
 
   ## Examples
-      iex> Stardust.Angle.deg_to_rad(360)
+      iex> deg_to_rad(360)
       6.283185307179586
-      iex> Stardust.Angle.deg_to_rad(90.0)
+      iex> deg_to_rad(90.0)
       1.5707963267948966
-      iex> Stardust.Angle.deg_to_rad(35.23)
+      iex> deg_to_rad(35.23)
       0.6148794954776022
   """
   @spec deg_to_rad(number) :: float
@@ -98,11 +98,11 @@ defmodule Stardust.Angle do
   Converts radians to degrees.
 
   ## Examples
-      iex> Stardust.Angle.rad_to_deg(6.283)
+      iex> rad_to_deg(6.283)
       359.9893826806963
-      iex> Stardust.Angle.rad_to_deg(1.57)
+      iex> rad_to_deg(1.57)
       89.95437383553926
-      iex> Stardust.Angle.rad_to_deg(1)
+      iex> rad_to_deg(1)
       57.29577951308232
   """
   @spec rad_to_deg(number) :: float
@@ -112,9 +112,9 @@ defmodule Stardust.Angle do
   Returns angle as specified format.
 
   ## Examples
-      iex> Stardust.Angle.from_deg(90) |> Stardust.Angle.to("d")
+      iex> from_deg(90) |> to("d")
       90.0
-      iex> Stardust.Angle.from_deg(90) |> Stardust.Angle.to("r")
+      iex> from_deg(90) |> to("r")
       1.5707963267948966
   """
   @spec to(float, binary) :: binary | float
@@ -125,7 +125,7 @@ defmodule Stardust.Angle do
   Returns as degrees.
 
   ## Example
-      iex> Stardust.Angle.from_deg(90) |> Stardust.Angle.to_deg
+      iex> from_deg(90) |> to_deg
       90.0
   """
   @spec to_deg(float) :: float
@@ -135,7 +135,7 @@ defmodule Stardust.Angle do
   Returns as radians.
 
   ## Example
-      iex> Stardust.Angle.from_deg(90) |> Stardust.Angle.to_rad
+      iex> from_deg(90) |> to_rad
       1.5707963267948966
   """
   @spec to_rad(float) :: float
@@ -145,11 +145,11 @@ defmodule Stardust.Angle do
   Output angle in dms format with provided separators and with desired precision.
 
   ## Example
-      iex> Stardust.Angle.from_deg(19.12) |> Stardust.Angle.to_dms
+      iex> from_deg(19.12) |> to_dms
       "19d7m12.0s"
-      iex> Stardust.Angle.from_deg(180) |> Stardust.Angle.to_dms("dms", 3)
+      iex> from_deg(180) |> to_dms("dms", 3)
       "180d0m0.000s"
-      iex> Stardust.Angle.from_deg(45.5) |> Stardust.Angle.to_dms(":")
+      iex> from_deg(45.5) |> to_dms(":")
       "45:30:0.0"
   """
   @spec to_dms(float, binary, float) :: binary

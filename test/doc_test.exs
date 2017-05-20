@@ -1,4 +1,4 @@
 defmodule DocTest do
   use ExUnit.Case
-  doctest Stardust.Angle
+  doctest Stardust.Angle, import: true
 end
