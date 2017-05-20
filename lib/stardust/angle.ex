@@ -171,10 +171,48 @@ defmodule Stardust.Angle do
   def to_dms(angle, sep, prec) do
     v = angle
     |> to_deg
-    {d, rd} = {trunc(v) |> to_string, v - trunc(v)}
+    {h, rd} = {trunc(v) |> to_string, v - trunc(v)}
     {m, rm} = {trunc(rd * 60) |> to_string, (rd * 60) - trunc(rd * 60)}
     s = rm * 60 |> Float.round(prec) |> :erlang.float_to_binary([decimals: prec])
-    Enum.zip([d, m, s], (sep |> String.graphemes))
+    combine_output [h, m, s], sep
+  end
+
+  @doc """
+  Output angle in hms format with provided separators and with desired precision.
+
+  ## Example
+      iex> from_deg(16.8) |> to_hms
+      "1h7m12.0s"
+      iex> from_deg(180) |> to_hms("hms", 3)
+      "12h0m0.000s"
+      iex> from_deg(45.5) |> to_hms(":")
+      "3:2:0.0"
+      iex> from_deg(180.0) |> to_hms("-")
+      "12-0-0.0"
+      iex> from_deg(180.0) |> to_hms("*&^")
+      "12*0&0.0^"
+  """
+  @spec to_hms(float, binary, float) :: binary
+  def to_hms(angle, sep \\ "hms", prec \\ 1)
+  def to_hms(angle, sep, prec) when byte_size(sep) == 1, do: to_hms(angle, String.duplicate(sep, 2) <> " ", prec)
+  def to_hms(angle, sep, prec) do
+    v = angle
+    |> to("h")
+    {h, rd} = {trunc(v) |> to_string, v - trunc(v)}
+    {m, rm} = {trunc(rd * 60) |> to_string, (rd * 60) - trunc(rd * 60)}
+    s = rm * 60 |> Float.round(prec) |> :erlang.float_to_binary([decimals: prec])
+    combine_output [h, m, s], sep
+  end
+  @doc """
+  Combine list and binary.
+
+  ## Example
+      iex> combine_output [12, 34, 56.0], "hms"
+      "12h34m56.0s"
+  """
+  @spec combine_output(list, binary) :: binary
+  def combine_output(vals, sep) do
+    Enum.zip(vals, (sep |> String.graphemes))
     |> Enum.reduce("", &(&2 <> (&1 |> Tuple.to_list |> Enum.join)))
     |> String.trim
   end
