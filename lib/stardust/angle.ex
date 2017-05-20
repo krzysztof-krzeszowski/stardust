@@ -116,10 +116,13 @@ defmodule Stardust.Angle do
       90.0
       iex> from_deg(90) |> to("r")
       1.5707963267948966
+      iex> from_deg(90) |> to("h")
+      6.0
   """
   @spec to(float, binary) :: binary | float
   def to(angle, "d"), do: angle |> Angle.to_deg()
   def to(angle, "r"), do: angle |> Angle.to_rad()
+  def to(angle, "h"), do: angle * 12 / :math.pi
 
   @doc """
   Returns as degrees.
