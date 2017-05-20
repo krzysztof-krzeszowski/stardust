@@ -160,17 +160,22 @@ defmodule Stardust.Angle do
       "180d0m0.000s"
       iex> from_deg(45.5) |> to_dms(":")
       "45:30:0.0"
+      iex> from_deg(180.0) |> to_dms("-")
+      "180-0-0.0"
+      iex> from_deg(180.0) |> to_dms("*&^")
+      "180*0&0.0^"
   """
   @spec to_dms(float, binary, float) :: binary
-  def to_dms(angle, sep \\ "dms", prec \\ 1) do
+  def to_dms(angle, sep \\ "dms", prec \\ 1)
+  def to_dms(angle, sep, prec) when byte_size(sep) == 1, do: to_dms(angle, String.duplicate(sep, 2) <> " ", prec)
+  def to_dms(angle, sep, prec) do
     v = angle
     |> to_deg
-    {d, rd} = {trunc(v), v - trunc(v)}
-    {m, rm} = {trunc(rd * 60), (rd * 60) - trunc(rd * 60)}
+    {d, rd} = {trunc(v) |> to_string, v - trunc(v)}
+    {m, rm} = {trunc(rd * 60) |> to_string, (rd * 60) - trunc(rd * 60)}
     s = rm * 60 |> Float.round(prec) |> :erlang.float_to_binary([decimals: prec])
-    case sep do
-      ":" -> "#{d}:#{m}:" <> s
-      "dms" -> "#{d}d#{m}m" <> s <> "s"
-    end
+    Enum.zip([d, m, s], (sep |> String.graphemes))
+    |> Enum.reduce("", &(&2 <> (&1 |> Tuple.to_list |> Enum.join)))
+    |> String.trim
   end
 end
