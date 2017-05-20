@@ -7,16 +7,16 @@ defmodule AnglePropertyTest do
       for_all number in real() do
         case number do
           0.0 ->
-            Stardust.Angle.from_degrees(number) == number
+            Stardust.Angle.from_deg(number) == number
           _ ->
-            Stardust.Angle.from_degrees(number) != number
+            Stardust.Angle.from_deg(number) != number
         end
       end
     end
 
     property "radians should be equal to argument" do
       for_all number in real() do
-        Stardust.Angle.from_radians(number) == number
+        Stardust.Angle.from_rad(number) == number
       end
     end
   end

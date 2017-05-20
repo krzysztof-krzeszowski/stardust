@@ -11,21 +11,21 @@ defmodule Stardust.Angle do
   New angle from degrees
 
   ## Example
-      iex> Stardust.Angle.from_degrees(90)
+      iex> Stardust.Angle.from_deg(90)
       1.5707963267948966
   """
-  @spec from_degrees(number) :: float
-  def from_degrees(angle), do: angle |> deg_to_rad
+  @spec from_deg(number) :: float
+  def from_deg(angle), do: angle |> deg_to_rad
 
   @doc """
   New angle from radians. Written for consistency.
 
   ## Example
-      iex> Stardust.Angle.from_radians(2.13)
+      iex> Stardust.Angle.from_rad(2.13)
       2.13
   """
-  @spec from_radians(number) :: float
-  def from_radians(angle), do: angle
+  @spec from_rad(number) :: float
+  def from_rad(angle), do: angle
 
   @doc """
   Construc new angle from formats:
@@ -71,7 +71,7 @@ defmodule Stardust.Angle do
   Angle addition.
 
   ## Example
-      iex> Stardust.Angle.from_degrees(90) |> Stardust.Angle.add(Stardust.Angle.from_degrees(90))
+      iex> Stardust.Angle.from_deg(90) |> Stardust.Angle.add(Stardust.Angle.from_deg(90))
       3.141592653589793
   """
 
@@ -112,9 +112,9 @@ defmodule Stardust.Angle do
   Returns angle as specified format.
 
   ## Examples
-      iex> Stardust.Angle.from_degrees(90) |> Stardust.Angle.to("d")
+      iex> Stardust.Angle.from_deg(90) |> Stardust.Angle.to("d")
       90.0
-      iex> Stardust.Angle.from_degrees(90) |> Stardust.Angle.to("r")
+      iex> Stardust.Angle.from_deg(90) |> Stardust.Angle.to("r")
       1.5707963267948966
   """
   @spec to(float, binary) :: binary | float
@@ -125,7 +125,7 @@ defmodule Stardust.Angle do
   Returns as degrees.
 
   ## Example
-      iex> Stardust.Angle.from_degrees(90) |> Stardust.Angle.to_deg()
+      iex> Stardust.Angle.from_deg(90) |> Stardust.Angle.to_deg
       90.0
   """
   @spec to_deg(float) :: float
@@ -135,9 +135,33 @@ defmodule Stardust.Angle do
   Returns as radians.
 
   ## Example
-      iex> Stardust.Angle.from_degrees(90) |> Stardust.Angle.to_rad()
+      iex> Stardust.Angle.from_deg(90) |> Stardust.Angle.to_rad
       1.5707963267948966
   """
   @spec to_rad(float) :: float
   def to_rad(angle), do: angle
+
+  @doc """
+  Output angle in dms format with provided separators and with desired precision.
+
+  ## Example
+      iex> Stardust.Angle.from_deg(19.12) |> Stardust.Angle.to_dms
+      "19d7m12.0s"
+      iex> Stardust.Angle.from_deg(180) |> Stardust.Angle.to_dms("dms", 3)
+      "180d0m0.000s"
+      iex> Stardust.Angle.from_deg(45.5) |> Stardust.Angle.to_dms(":")
+      "45:30:0.0"
+  """
+  @spec to_dms(float, binary, float) :: binary
+  def to_dms(angle, sep \\ "dms", prec \\ 1) do
+    v = angle
+    |> to_deg
+    {d, rd} = {trunc(v), v - trunc(v)}
+    {m, rm} = {trunc(rd * 60), (rd * 60) - trunc(rd * 60)}
+    s = rm * 60 |> Float.round(prec) |> :erlang.float_to_binary([decimals: prec])
+    case sep do
+      ":" -> "#{d}:#{m}:" <> s
+      "dms" -> "#{d}d#{m}m" <> s <> "s"
+    end
+  end
 end
