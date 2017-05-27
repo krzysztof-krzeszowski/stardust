@@ -36,11 +36,12 @@ defmodule Stardust.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      { :ex_doc, "~> 0.14" },
       { :earmark, "~> 1.2.2" },
+      { :ex_doc, "~> 0.14" },
       { :excheck, "~> 0.5", only: :test },
-      { :triq, github: "triqng/triq", only: :test },
       { :excoveralls, "~> 0.6", only: :test },
+      { :credo, "~> 0.8.0-rc7", only: [:dev, :test], runtime: false },
+      { :triq, github: "triqng/triq", only: :test },
     ]
   end
 end

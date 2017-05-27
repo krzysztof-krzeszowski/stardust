@@ -40,11 +40,13 @@ defmodule Stardust.Angle do
   """
   @spec from_hms(binary) :: float
   def from_hms(angle) do
-    [h, m, s] = angle
-    |> String.split(:binary.compile_pattern([":", "h", "m"]))
-    |> Enum.map(&Float.parse/1)
-    |> Enum.map(&(elem(&1, 0)))
-    (((360 * h / 24) * 3600.0 + m * 60 + s) / 3600) |> deg_to_rad
+    [h, m, s] =
+      angle
+      |> String.split(:binary.compile_pattern([":", "h", "m"]))
+      |> Enum.map(&Float.parse/1)
+      |> Enum.map(&(elem(&1, 0)))
+
+    ((360 * h / 24) * 3600.0 + m * 60 + s) / 3600 |> deg_to_rad
   end
 
   @doc """
@@ -64,7 +66,7 @@ defmodule Stardust.Angle do
     |> String.split(:binary.compile_pattern([":", "d", "m"]))
     |> Enum.map(&Float.parse/1)
     |> Enum.map(&(elem(&1, 0)))
-    ((h * 3600.0 + m * 60 + s) / 3600) |> deg_to_rad
+    (h * 3600.0 + m * 60 + s) / 3600 |> deg_to_rad
   end
 
   @doc """
@@ -171,9 +173,10 @@ defmodule Stardust.Angle do
   def to_dms(angle, sep, prec) do
     v = angle
     |> to_deg
-    {h, rd} = {trunc(v) |> to_string, v - trunc(v)}
-    {m, rm} = {trunc(rd * 60) |> to_string, (rd * 60) - trunc(rd * 60)}
-    s = rm * 60 |> Float.round(prec) |> :erlang.float_to_binary([decimals: prec])
+    {h, rd} = {v |> trunc |> to_string, v - trunc(v)}
+    {m, rm} = {rd * 60  |> trunc |> to_string, (rd * 60) - trunc(rd * 60)}
+    s =
+      rm * 60 |> Float.round(prec) |> :erlang.float_to_binary([decimals: prec])
     combine_output [h, m, s], sep
   end
 
@@ -196,11 +199,12 @@ defmodule Stardust.Angle do
   def to_hms(angle, sep \\ "hms", prec \\ 1)
   def to_hms(angle, sep, prec) when byte_size(sep) == 1, do: to_hms(angle, String.duplicate(sep, 2) <> " ", prec)
   def to_hms(angle, sep, prec) do
-    v = angle
-    |> to("h")
-    {h, rd} = {trunc(v) |> to_string, v - trunc(v)}
-    {m, rm} = {trunc(rd * 60) |> to_string, (rd * 60) - trunc(rd * 60)}
-    s = rm * 60 |> Float.round(prec) |> :erlang.float_to_binary([decimals: prec])
+    v = angle |> to("h")
+    {h, rd} = {v |> trunc |> to_string, v - trunc(v)}
+    {m, rm} = {rd * 60 |> trunc |> to_string, (rd * 60) - trunc(rd * 60)}
+    s = rm * 60
+    |> Float.round(prec)
+    |> :erlang.float_to_binary([decimals: prec])
     combine_output [h, m, s], sep
   end
   @doc """
